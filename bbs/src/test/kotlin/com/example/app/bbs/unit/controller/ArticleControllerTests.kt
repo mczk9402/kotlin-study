@@ -126,6 +126,17 @@ class ArticleControllerTests {
     }
 
     @Test
+    fun updateArticleRequestErrorTst() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/update")
+        )
+            .andExpect(status().is3xxRedirection)
+            .andExpect(view().name("redirect:/edit/0"))
+            .andExpect(flash().attributeExists("errors"))
+            .andExpect(flash().attributeExists("request"))
+    }
+
+    @Test
     @Sql(statements = ["INSERT INTO article (name, title, contents, article_key, register_at, update_at) VALUES ('test', 'test', 'test', 'test', now(), now());"])
     fun updateArticleExistsArticleTest() {
         val latestArticle: Article = target.articleRepository.findAll().last()
