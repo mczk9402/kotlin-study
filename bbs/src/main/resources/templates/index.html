@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>サンプル掲示板</title>
+    <script src="js/index.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+        .container {
+        display: grid;
+        gap: 32px;
+        max-width: 620px;
+        margin: 0 auto;
+        }
+        .Area_articles {
+        border: 1px solid #cecece;
+        }
+        .Area_articles > div {
+        padding: 8px;
+        }
+        .Area_articles > div:not(:first-child) {
+        border-top: 1px solid #cecece;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="Area_headers">サンプル掲示板</header>
+
+        <div th:class="'alert ' + *{alert_class}" role="alert" th:id="flash-message" th:if="${message}" th:text="${message}"></div>
+
+        <form th:action="@{/}" th:method="post" th:object="${articleRequest}">
+            <div class="Area_articles">
+                <div>
+                    <div>名前</div>
+                    <!-- flashAttribute の値があればth:valueが表示される -->
+                    <input type="text" name="name" size="50" th:value="*{name}" maxlength="50">
+                    <div th:if="@{#fields.hasErrors('name')}" class="alert-error" th:errors="*{name}"></div>
+                </div>
+                <div>
+                    <div>題名</div>
+                    <input type="text" name="title" size="50" th:value="*{title}" maxlength="50">
+                    <div th:if="@{#fields.hasErrors('title')}" class="alert-error" th:errors="*{title}"></div>
+                </div>
+                <div>
+                    <div>内容</div>
+                    <textarea style="width:100%" name="contents" rows="10" maxlength="500" th:value="*{contents}"></textarea>
+                    <div th:if="@{#fields.hasErrors('contents')}" class="alert-error" th:errors="*{contents}"></div>
+                </div>
+                <div>
+                    <span>投稿KEY:</span>
+                    <input type="password" name="articleKey" maxlength="4" th:value="*{articleKey}">
+                    <div th:if="@{#fields.hasErrors('articleKey')}" class="alert-error" th:errors="*{articleKey}"></div>
+                </div>
+                <div>
+                    <button type="submit">送信</button>
+                    <button type="reset">リセット</button>
+                </div>
+            </div>
+        </form>
+        <div class="Area_articles" th:each="article:${articles}" th:object="${article}">
+            <div>
+                <label>
+                    <input type="radio" name="article_check" th:data-id="*{id}">
+                    <span th:text="*{id} + '. ' + *{title}"></span>
+                </label>
+            </div>
+            <div>
+                <span>名前:</span>
+                <span th:text="*{name}"></span>
+            </div>
+            <div>
+                <span>投稿日:</span>
+                <span th:text="${#dates.format(article.registerAt, 'yyyy/MM/dd HH:mm:ss')}"></span>
+            </div>
+            <div>
+                <span th:text="*{contents}"></span>
+            </div>
+        </div>
+
+        <div>
+            <form th:action="@{/}" th:method="get" name="form_change_article">
+                <button onClick="changeArticleSubmit('update')" type="button">編集</button>
+                <button onClick="changeArticleSubmit('delete')" type="button">削除</button>
+            </form>
+
+
+        </div>
+    </div>
+</body>
+</html>

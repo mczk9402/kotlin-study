@@ -1,0 +1,4 @@
+2022-11-27 14:13:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: 列 "CONTENTS CHARACTER VARYING(255)" の値が長過ぎます: "'aasaaaaaaaasaaaaaaaasaaaaaaaasaaaaaaaasaaaaaaaasaaaaaaaasaaaaaaaasaaaaaaaasaaaa... (500)"
+Value too long for column "CONTENTS CHARACTER VARYING(255)": "'aasaaaaaaaasaaaaaaaasaaaaaaaasaaaaaaaasaaaaaaaasaaaaaaaasaaaaaaaasaaaaaaaasaaaa... (500)"; SQL statement:
+insert into article (id, article_key, contents, name, register_at, title, update_at) values (default, ?, ?, ?, ?, ?, ?) [22001-214]
