@@ -206,4 +206,15 @@ class ArticleControllerTests {
             .andExpect(flash().attributeExists("message"))
             .andExpect(flash().attribute("message", target.MESSAGE_DELETE_NORMAL))
     }
+
+    @Test
+    fun deleteArticleRequestErrorTest() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/delete")
+        )
+            .andExpect(status().is3xxRedirection)
+            .andExpect(view().name("redirect:/delete_confirm/0"))
+            .andExpect(flash().attributeExists("errors"))
+            .andExpect(flash().attributeExists("request"))
+    }
 }

@@ -152,9 +152,16 @@ class ArticleController {
 
     @PostMapping("delete")
     fun deleteArticle(
-        @ModelAttribute articleRequest: ArticleRequest,
+        @ModelAttribute @Validated articleRequest: ArticleRequest,
+        result: BindingResult,
         redirectAttributes: RedirectAttributes
     ):String {
+        if(result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", result)
+            redirectAttributes.addFlashAttribute("request", articleRequest)
+            return "redirect:/delete_confirm/${articleRequest.id}"
+        }
+
         if(!articleRepository.existsById(articleRequest.id)) {
             redirectAttributes.addFlashAttribute("message", MESSAGE_ARTICLE_DOES_NOT_EXISTS)
             redirectAttributes.addFlashAttribute("alert_class", ALERT_CLASS_ERROR)
