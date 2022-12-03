@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import org.springframework.data.domain.*
 import java.util.*
 import kotlin.math.log
 
@@ -24,6 +25,8 @@ class ArticleController {
     val MESSAGE_DELETE_NORMAL= "正常に削除できました"
 
     val ALERT_CLASS_ERROR = "alert-error"
+
+    val PAGE_SIZE: Int = 10
 
     @PostMapping("/")
     fun registerArticle(
@@ -55,8 +58,32 @@ class ArticleController {
     @GetMapping("/")
     fun getArticleList(
         @ModelAttribute articleRequest: ArticleRequest,
+        @RequestParam(
+            value = "page",
+            defaultValue = "0",
+            required = false
+        ) page:Int,
         model: Model
     ): String {
+
+//        val pageable: Pageable = PageRequest.of(
+//            page,
+//            this.PAGE_SIZE,
+//            Sort.Direction.DESC
+//        )
+//
+
+        val pageable: Pageable = PageRequest.of(
+            page,
+            PAGE_SIZE,
+            Sort.Direction.DESC
+        )
+
+        println("page")
+        println(page)
+//        println("pageable")
+//        println(pageable)
+
         if(model.containsAttribute("errors")) {
             val key: String = BindingResult.MODEL_KEY_PREFIX + "articleRequest"
             model.addAttribute(key,model.asMap()["errors"])
@@ -66,6 +93,8 @@ class ArticleController {
             model.addAttribute("articleRequest", model.asMap()["request"])
         }
 
+//        val articles: Page<Article> = articleRepository.findAll(pageable)
+//        model.addAttribute("page", articles)
         model.addAttribute("articles", articleRepository.findAll())
         return "index"
     }
